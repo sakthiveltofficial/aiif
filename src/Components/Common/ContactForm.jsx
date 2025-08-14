@@ -99,7 +99,7 @@ const ContactForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
 
         {/* Form Section - Left Side */}
-        <div className="order-2 md:order-1">
+        <div className="order-1 md:order-1">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Form Fields */}
             <div className="space-y-4 sm:space-y-5">
@@ -215,14 +215,14 @@ const ContactForm = () => {
         </div>
 
         {/* Main Content Section - Mobile: Top, Large: Right Side */}
-        <div className="order-1 md:order-2 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+        <div className="order-2 md:order-2 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
 
           
           {/* Social Media Section */}
           <div className="flex flex-col items-end gap-3 w-full max-w-[374px]">
-            <h2 className="font-outfit font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl leading-[53px] text-[#4E73FF] text-right w-full">
+            {/* <h2 className="font-outfit font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl leading-[53px] text-[#4E73FF] text-right w-full">
               Social media
-            </h2>
+            </h2> */}
             
             <div className="flex flex-col gap-6 w-full max-w-[370px]">
               {/* Instagram */}

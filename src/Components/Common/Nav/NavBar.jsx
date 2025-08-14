@@ -26,7 +26,7 @@ function NavBar() {
       });
 
       // Animate modal slide up from bottom
-      gsap.fromTo(modalRef.current, 
+      gsap.fromTo(modalRef.current,
         {
           y: "100%",
           opacity: 0
@@ -39,7 +39,7 @@ function NavBar() {
           delay: 0.1,
           onComplete: () => {
             // Animate nav items one by one from left
-            gsap.fromTo(navItemsRef.current.children, 
+            gsap.fromTo(navItemsRef.current.children,
               {
                 x: -100,
                 opacity: 0
@@ -99,7 +99,7 @@ function NavBar() {
 
   const handleLinkClick = (href) => {
     setIsModalOpen(false);
-    
+
     // Only close desktop menu if navigating to home page
     const isNavigatingToHome = href === '/';
     if (isNavigatingToHome) {
@@ -109,7 +109,7 @@ function NavBar() {
 
   const handleDesktopMenuToggle = () => {
     const isHomePage = pathname === '/' || pathname === '';
-    
+
     // On home page, allow normal toggle behavior
     if (isHomePage) {
       setIsDesktopMenuOpen(!isDesktopMenuOpen);
@@ -125,7 +125,7 @@ function NavBar() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       const isHomePage = pathname === '/' || pathname === '';
-      
+
       // Only allow closing via outside click on home page
       if (isHomePage && isDesktopMenuOpen && !event.target.closest('.desktop-menu-container')) {
         setIsDesktopMenuOpen(false);
@@ -145,8 +145,8 @@ function NavBar() {
           <Link href="/">
             <Image
               className="w-[6rem] md:w-[10rem] h-[30px] md:h-[45px] translate-y-[5px] md:translate-y-[10px] translate-x-[5px] md:translate-x-[10px] cursor-pointer"
-              src={"/logo.png"} 
-              alt="SanthiGearsLogo" 
+              src={"/logo.png"}
+              alt="SanthiGearsLogo"
               width={1080}
               height={1024}
             />
@@ -193,7 +193,7 @@ function NavBar() {
               href="/service"
               onClick={() => handleLinkClick('/service')}
             >
-             Programs & Services
+              Programs & Services
             </Link>
             <Link
               className="text-black text-sm md:text-lg whitespace-nowrap relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:transition-all after:duration-300 after:bg-gradient-to-r after:from-[#6b95ff] after:to-[#4e73ff]"
@@ -207,14 +207,14 @@ function NavBar() {
               href="/startups"
               onClick={() => handleLinkClick('/startups')}
             >
-              Startups TN
+              Startup TN
             </Link>
             <Link
               className="text-black text-sm md:text-lg whitespace-nowrap relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:transition-all after:duration-300 after:bg-gradient-to-r after:from-[#6b95ff] after:to-[#4e73ff]"
               href="/resource"
               onClick={() => handleLinkClick('/resource')}
             >
-              Resource
+              Resources
             </Link>
             <Link
               className="text-black text-sm md:text-lg whitespace-nowrap relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:transition-all after:duration-300 after:bg-gradient-to-r after:from-[#6b95ff] after:to-[#4e73ff]"
@@ -237,7 +237,7 @@ function NavBar() {
             </div>
           )}
 
-          
+
         </div>
 
         {/* Mobile/Tablet Menu Button */}
@@ -254,7 +254,7 @@ function NavBar() {
               MENU
             </span>
           </div>
-          
+
           <div className="menu__button ml-5" onClick={handleMenuClick}>
             <div className="menu__button__icon">
               <Menu className="w-[1.5rem] h-[1.5rem] text-black" />
@@ -265,7 +265,7 @@ function NavBar() {
 
       {/* Mobile/Tablet Modal Overlay */}
       {isModalOpen && (
-        <div 
+        <div
           ref={overlayRef}
           className="fixed inset-0 bg-black bg-opacity-50 z-[50] lg:hidden"
           onClick={handleCloseModal}
@@ -275,10 +275,10 @@ function NavBar() {
 
       {/* Mobile/Tablet Modal */}
       {isModalOpen && (
-        <div 
+        <div
           ref={modalRef}
           className="fixed bottom-0 left-0 right-0 bg-white rounded-t-[32px] z-[51] lg:hidden"
-          style={{ 
+          style={{
             transform: "translateY(100%)",
             opacity: 0,
             minHeight: "60vh",
@@ -299,70 +299,69 @@ function NavBar() {
               <X className="w-5 h-5 text-gray-600" />
             </button>
           </div> */}
-         
+
 
           {/* Modal Content */}
           <div className="px-6 pb-8">
-           
 
-                         <nav ref={navItemsRef} className="space-y-3">
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/"
-                 onClick={() => handleLinkClick('/')}
-               >
-                 <Home className="w-8 h-8 mr-4" />
-                 Home
-               </Link>
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/about"
-                 onClick={() => handleLinkClick('/about')}
-               >
-                 <Users className="w-8 h-8 mr-4" />
-                 About us
-               </Link>
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/service"
-                 onClick={() => handleLinkClick('/service')}
-               >
-                 <Briefcase className="w-8 h-8 mr-4" />
-                 Programs & Services
-               </Link>
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/events"
-                 onClick={() => handleLinkClick('/events')}
-               >
-                 <Calendar className="w-8 h-8 mr-4" />
-                 Events
-               </Link>
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/startups"
-                 onClick={() => handleLinkClick('/startups')}
-               >
-                 <Rocket className="w-8 h-8 mr-4" />
-                 Startups TN
-               </Link>
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/resource"
-                 onClick={() => handleLinkClick('/resource')}
-               >
-                 <BookOpen className="w-8 h-8 mr-4" />
-                 Resource
-               </Link>
-               <Link
-                 className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
-                 href="/contact"
-                 onClick={() => handleLinkClick('/contact')}
-               >
-                 <Phone className="w-8 h-8 mr-4" />
-                 Contact us
-               </Link>
-             </nav>
+            <nav ref={navItemsRef} className="space-y-3">
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/"
+                onClick={() => handleLinkClick('/')}
+              >
+                <Home className="w-8 h-8 mr-4" />
+                Home
+              </Link>
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/about"
+                onClick={() => handleLinkClick('/about')}
+              >
+                <Users className="w-8 h-8 mr-4" />
+                About us
+              </Link>
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/service"
+                onClick={() => handleLinkClick('/service')}
+              >
+                <Briefcase className="w-8 h-8 mr-4" />
+                Programs & Services
+              </Link>
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/events"
+                onClick={() => handleLinkClick('/events')}
+              >
+                <Calendar className="w-8 h-8 mr-4" />
+                Events
+              </Link>
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/startups"
+                onClick={() => handleLinkClick('/startups')}
+              >
+                <Rocket className="w-8 h-8 mr-4" />
+                Startup TN
+              </Link>
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/resource"
+                onClick={() => handleLinkClick('/resource')}
+              >
+                <BookOpen className="w-8 h-8 mr-4" />
+                Resources
+              </Link>
+              <Link
+                className="flex items-center text-3xl font-extrabold text-gray-800 py-3 border-b border-gray-100 hover:text-[#6b95ff] transition-colors"
+                href="/contact"
+                onClick={() => handleLinkClick('/contact')}
+              >
+                <Phone className="w-8 h-8 mr-4" />
+                Contact us
+              </Link>
+            </nav>
           </div>
         </div>
       )}
