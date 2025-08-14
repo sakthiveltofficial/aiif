@@ -142,13 +142,15 @@ function NavBar() {
     <>
       <div className="w-full h-[60px] md:h-[90px] fixed top-0 z-[40] flex items-center justify-between ">
         <div className={` ${pathname.split("/")[1] == "" ? "logo__continer" : "bg-white"} z-[200] flex items-center justify-center relative h-full bg-[#e5e5e5] w-[8rem] md:w-[12rem] rounded-br-[28px]`}>
-          <Image
-            className="w-[6rem] md:w-[10rem] h-[30px] md:h-[45px] translate-y-[5px] md:translate-y-[10px] translate-x-[5px] md:translate-x-[10px]"
-            src={"/logo.png"} 
-            alt="SanthiGearsLogo" 
-            width={1080}
-            height={1024}
-          />
+          <Link href="/">
+            <Image
+              className="w-[6rem] md:w-[10rem] h-[30px] md:h-[45px] translate-y-[5px] md:translate-y-[10px] translate-x-[5px] md:translate-x-[10px] cursor-pointer"
+              src={"/logo.png"} 
+              alt="SanthiGearsLogo" 
+              width={1080}
+              height={1024}
+            />
+          </Link>
         </div>
 
         {/* Desktop Menu */}

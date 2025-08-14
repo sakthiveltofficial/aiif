@@ -289,7 +289,7 @@ export default function ScrollFan() {
               <div className="w-[250px] h-[250px] rounded-full border-2 border-gray-300 bg-white flex items-center justify-center shadow-lg">
                 {/* AIIF Logo */}
                 <div className="text-center">
-                  <Image src="/logo.png" alt="AIIF Logo" width={1080} height={1080} className="" />
+                  {/* <Image src="/logo.png" alt="AIIF Logo" width={1080} height={1080} className="" /> */}
                 </div>
               </div>
             </div>
