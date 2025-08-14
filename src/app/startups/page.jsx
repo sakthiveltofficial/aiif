@@ -31,6 +31,22 @@ const page = () => {
     const diceShadowRef = useRef(null);
     const diceImageRef = useRef(null);
 
+    // Move diceTexts and currentIndex outside useGSAP so they can be accessed in JSX
+    const diceTexts = [
+        {id:1,name : "Catalyst Platform", image : "/webp/startup/Catalyst Platform.webp"}, 
+        {id:2,name : "MentorTN", image : "/webp/startup/MentorTN.webp"}, 
+        {id:3,name : "StartupTN", image : "/webp/startup/startuptn.webp"}, 
+        {id:4,name : "Coordination programs", image : "/webp/startup/program coordination.webp"},
+        {id:5,name : "Startup India", image : "/webp/startup/startup.webp"},
+        {id:6,name : "NITI Aayog", image : "/webp/startup/NITI-AIM-Logo.webp"},
+        {id:7,name : "Atal Innovation Mission", image : "/webp/startup/image.png"},
+        {id:8,name : "EDII", image : "/webp/startup/EDIA.webp"},
+        {id:9,name : "MSME", image : "/webp/startup/ms&me.webp"},   
+    ];
+    const [currentIndex, setCurrentIndex] = React.useState(0);
+    const currentIndexRef = useRef(0); // Add ref to track current index for GSAP
+    const rollIntervalRef = useRef(null); // Add ref to track the interval
+
     useGSAP(() => {
         const container = containerRef.current;
         const lightBlue = lightBlueRef.current;
@@ -54,6 +70,12 @@ const page = () => {
             if (supportsHover && !isMobile) {
                 // Hover animation - create layered 3D separation
                 container.addEventListener('mouseenter', () => {
+                    // Pause the dice animation
+                    if (rollIntervalRef.current) {
+                        clearInterval(rollIntervalRef.current);
+                        rollIntervalRef.current = null;
+                    }
+                    
                     // Adjust animation intensity based on screen size
                     const intensity = isTablet ? 0.6 : 1;
 
@@ -120,6 +142,11 @@ const page = () => {
 
                 // Mouse leave animation - return all layers to normal
                 container.addEventListener('mouseleave', () => {
+                    // Resume the dice animation
+                    if (!rollIntervalRef.current) {
+                        rollIntervalRef.current = setInterval(rollReveal, 4000);
+                    }
+                    
                     gsap.to(container, {
                         duration: 0.6,
                         rotationX: 0,
@@ -169,8 +196,6 @@ const page = () => {
             }
 
             // Dice roll reveal animation
-            const diceTexts = [{name : "StartupTN", image : "/webp/startup/startup.webp"}, {name : "EDII", image : "/webp/startup/EDIA.webp"}, {name : "IIC", image : "/webp/startup/iic.webp"}, {name : "MS&ME", image : "/webp/startup/ms&me.webp"}];
-            let currentIndex = 0;
 
             // Set initial text and image to match the first item
             if (diceText && diceShadow && diceImage) {
@@ -188,11 +213,13 @@ const page = () => {
                     ease: "power2.inOut",
                     onComplete: () => {
                         // Update text content for both main text and shadow, and image
-                        currentIndex = (currentIndex + 1) % diceTexts.length;
-                        console.log(`Changing to: ${diceTexts[currentIndex].name} with logo: ${diceTexts[currentIndex].image}`);
-                        diceText.textContent = diceTexts[currentIndex].name;
-                        diceShadow.textContent = diceTexts[currentIndex].name;
-                        diceImage.src = diceTexts[currentIndex].image;
+                        const newIndex = (currentIndexRef.current + 1) % diceTexts.length;
+                        currentIndexRef.current = newIndex; // Update ref first
+                        setCurrentIndex(newIndex); // Then update state
+                        console.log(`Changing to: ${diceTexts[newIndex].name} with logo: ${diceTexts[newIndex].image}`);
+                        diceText.textContent = diceTexts[newIndex].name;
+                        diceShadow.textContent = diceTexts[newIndex].name;
+                        diceImage.src = diceTexts[newIndex].image;
                         
                         // Reset position to below (hidden)
                         gsap.set([diceText, diceShadow, diceImage], { y: 50, opacity: 0 });
@@ -208,38 +235,280 @@ const page = () => {
                 });
             };
 
-            // Roll reveal every 1 second
-            const rollInterval = setInterval(rollReveal, 2000);
+            // Roll reveal every 4 seconds (slower animation)
+            rollIntervalRef.current = setInterval(rollReveal, 4000);
 
             // Cleanup interval on component unmount
-            return () => clearInterval(rollInterval);
+            return () => {
+                if (rollIntervalRef.current) {
+                    clearInterval(rollIntervalRef.current);
+                }
+            };
+        }
+    }, []); // Keep empty dependency array to avoid re-running GSAP setup
+
+    // Sync the ref with state changes
+    React.useEffect(() => {
+        currentIndexRef.current = currentIndex;
+    }, [currentIndex]);
+
+    // Add fade in/out animations for left section content
+    useGSAP(() => {
+        const leftSection = document.querySelector('.left-content-section');
+        if (leftSection) {
+            // Initial fade in
+            gsap.fromTo(leftSection, 
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
+            );
         }
     }, []);
+
+    // Fade out/in animation when content changes
+    useGSAP(() => {
+        const leftSection = document.querySelector('.left-content-section');
+        if (leftSection) {
+            // Fade out current content
+            gsap.to(leftSection, {
+                opacity: 0,
+                y: -10,
+                duration: 0.3,
+                ease: "power2.in",
+                onComplete: () => {
+                    // Fade in new content
+                    gsap.to(leftSection, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        }
+    }, [currentIndex]);
 
     const staticData = [
         {
             id: 1,
             title: "Catalyst Platform",
-            description: "Get featured on StartupTN’s Catalyst platform—a gateway to networking, investor visibility, and statewide startup events and challenges.",
-            image: "/webp/project_planning.webp"
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Visibility Boost",
+                    description : "Get featured on the Catalyst platform to enhance your reach among investors, industry leaders, and the startup community."
+                },
+                {
+                    subTitle : "Event Access",
+                    description : "Participate in exclusive statewide challenges, hackathons, and networking events."
+                },
+                {
+                    subTitle : "Investor Connect",
+                    description : "Showcase your startup to angel investors, venture capitalists, and strategic partners."
+                },
+
+                {
+                    subTitle : "Growth Resources",
+                    description : "Access curated knowledge, mentorship, and collaboration opportunities through Catalyst’s network."
+                }
+            ]
         },
         {
             id: 2,
             title: "MentorTN",
-            description: "Connect with a diverse pool of mentors from academia, industry, and entrepreneurship through the MentorTN network to guide your startup’s growth.",
-            image: "/webp/project_planning.webp"
+           
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Expert Mentorship",
+                    description : "Connect with seasoned mentors from academia, industry, and entrepreneurship through MentorTN’s pool."
+                },
+                {
+                    subTitle : "One-on-One Guidance",
+                        description : "Receive personalised advice on scaling, fundraising, and product development."
+                },
+                {
+                    subTitle : "Skill Enhancement",
+                    description : "Get industry-specific training and leadership guidance to strengthen your business capabilities."
+                },
+                {
+                    subTitle : "Network Expansion",
+                    description : "Join a community of founders, innovators, and thought leaders who can open doors for your venture."
+                }
+            ]
         },
         {
             id: 3,
             title: "StartupTN",
-            description: "Leverage Tamil Nadu’s official startup platform to apply for government grants, explore market opportunities, and showcase your venture.",
-            image: "/webp/project_planning.webp"
+        
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Statewide Startup Support",
+                    description : "Tap into Tamil Nadu’s official startup network to access resources, events, and funding opportunities."
+                },
+                {
+                    subTitle : "Government Grants",
+                    description : "Apply for exclusive StartupTN grants and schemes, with AIIF guiding your proposal process."
+                },
+                {
+                    subTitle : "Market Opportunities",
+                    description : "Leverage state-backed platforms to showcase your innovations to potential buyers and partners."
+                },
+                {
+                    subTitle : "Policy & Advocacy",
+                    description : "Stay informed on policies, incentives, and reforms designed to support your entrepreneurial journey."
+                }
+            ]
         },
         {
             id: 4,
             title: "Coordination programs",
-            description: "AJK AIIF facilitates coordination with state-run startup missions, organizing pitch days, demo days, and capacity-building programs aligned with StartupTN’s vision.",
-            image: "/webp/project_planning.webp"
+            
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Seamless State Coordination",
+                    description : "AIIF bridges startups with state missions, ensuring your participation in capacity-building programs."
+                },
+                {
+                    subTitle : "Pitch Opportunities",
+                    description : "Take part in organised pitch days and demo events aligned with StartupTN’s vision."
+                },
+
+                {
+                    subTitle : "Sector-Specific Initiatives",
+                    description : "Engage with targeted programs in technology, manufacturing, services, and sustainability."
+                },
+                {
+                    subTitle : "Resource Facilitation",
+                    description : "Access technical, financial, and market resources through coordinated government channels."
+                }
+            ]
+        },
+        {
+            id: 5,
+            title: "Startup India",
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "National Recognition",
+                    description : "Register and feature your startup on Startup India’s official platform for greater visibility."
+                },
+                {
+                    subTitle : "Exclusive Schemes",
+                    description : "Unlock benefits like tax exemptions, easier compliance, and government tenders."
+                },
+                {
+                    subTitle : "Innovation Challenges",
+                    description : "Compete in national-level hackathons and problem-solving missions."
+                },
+                {
+                    subTitle : "Investor Outreach",
+                    description : "Leverage Startup India’s network to connect with top-tier investors and accelerators."
+                }
+            ]
+
+        },
+        {
+            id: 6,
+            title: "NITI Aayog",
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Policy Shaping",
+                    description : "Engage with think-tank-driven innovation and entrepreneurship policy initiatives."
+                },
+                {
+                    subTitle : "Flagship Programs",
+                    description : "Participate in NITI Aayog’s high-impact projects and thematic challenges."
+                },
+                {
+                    subTitle : "Research Collaboration",
+                    description : "Access data, reports, and analysis to make informed business decisions."
+                },
+                {
+                    subTitle : "Impact Opportunities",
+                    description : "Be part of national transformation projects in health, education, agriculture, and sustainability."
+                }
+            ]
+        },
+        {
+            id: 7,
+            title: "Atal Innovation Mission",
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Incubation Support",
+                    description : "Leverage AIM’s incubation network for workspace, mentoring, and R&D facilities."
+                },
+                {
+                    subTitle : "Grant Access",
+                    description : "Apply for innovation grants and seed funding from AIM programs."
+                },
+                {
+                    subTitle : "Student Innovation",
+                    description : "Encourage young innovators through Atal Tinkering Labs and related initiatives."
+                },
+                {
+                    subTitle : "Global Collaboration",
+                    description : "Connect with international partners and programs under AIM’s global outreach."
+                }
+            ]
+        },
+        {
+            id: 8,
+            title: "EDII",
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Entrepreneurship Development",
+                    description : "Learn from structured training programs designed by EDII to strengthen your entrepreneurial mindset."
+                },
+                {
+                    subTitle : "Skill Certification",
+                    description : "Gain certifications recognised by industry and government to boost your credibility."
+                },
+                {
+                    subTitle : "Sector-Specific Support",
+                    description : "Access targeted programs for manufacturing, services, rural enterprises, and women entrepreneurs."
+                },
+
+                {
+                    subTitle : "Funding Linkages",
+                    description : "Connect with financial institutions and investors through EDII’s vast network."
+                },
+                {
+                    subTitle : "CTA",
+                    description : "Empower your entrepreneurial journey with AIIF & EDII."
+                }
+            ]
+        },
+        {
+            id: 9,
+            title: "MSME",
+            image: "/webp/project_planning.webp",
+            liData:[
+                {
+                    subTitle : "Business Development Schemes",
+                    description : "Access subsidies, incentives, and market development assistance from MSME programs."
+                },
+                {
+                    subTitle : "Technology Upgradation",
+                    description : "Leverage government support for modernising processes and adopting advanced tools."
+                },
+                {
+                    subTitle : "Cluster Development",
+                    description : "Join sector-specific clusters for shared resources, marketing, and R&D facilities."
+                },
+                {
+                    subTitle : "Export Opportunities",
+                    description : "Get assistance for international trade fairs, buyer-seller meets, and export readiness."
+                },
+                {
+                    subTitle : "CTA",
+                    description : "Grow your MSME with AIIF’s support and MSME initiatives."
+                }
+            ]
         }
 
     ]
@@ -256,18 +525,23 @@ const page = () => {
 
                         {/* Cards Section - Mobile: Stack vertically, Large: Left side */}
                         <div className='lg:col-span-6 order-2 lg:order-1'>
-                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-1 sm:gap-6'>
-
-                                <div className='space-y-4 sm:space-y-6'>
-                                    <CardDesign data={staticData[0]} />
-                                    <CardDesign data={staticData[1]} />
+                            <div className='left-content-section'>
+                                <h1 className="text-3xl font-bold mb-6 text-[#00CA40]">
+                                    {staticData.find(item => item.id === diceTexts[currentIndex]?.id)?.title || ''}
+                                </h1>
+                                
+                                <div className="-space-y-1">
+                                    {staticData.find(item => item.id === diceTexts[currentIndex]?.id)?.liData?.map((item, index) => (
+                                        <div key={index} className=" rounded-lg p-4 border border-white/20">
+                                            <h3 className="text-lg font-semibold text-slate-700 mb-2">
+                                                {item.subTitle}
+                                            </h3>
+                                            <p className="text-slate-500 leading-relaxed">
+                                                {item.description}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
-
-                                <div className='space-y-4 sm:space-y-6'>
-                                    <CardDesign data={staticData[2]} />
-                                    <CardDesign data={staticData[3]} />
-                                </div>
-
                             </div>
                         </div>
 
@@ -311,7 +585,7 @@ const page = () => {
                                 {/* Layer 2: Text Shadow (Middle Layer) */}
                                 <div
                                     ref={shadowRef}
-                                    className='absolute inset-0 px-4 sm:px-6 lg:px-[30px] py-8 sm:py-12 lg:py-[80px] text-2xl sm:text-4xl lg:text-6xl font-semibold leading-tight lg:leading-normal text-slate-700 pointer-events-none'
+                                    className='absolute inset-0 px-4 sm:px-6 lg:px-[30px] py-8 sm:py-12 lg:py-[80px] text-2xl sm:text-4xl lg:text-4xl font-semibold leading-tight lg:leading-normal text-slate-700 pointer-events-none'
                                     style={{
                                         transformStyle: 'preserve-3d',
                                         transformOrigin: 'center center',
@@ -328,7 +602,7 @@ const page = () => {
                                     ref={circleRef}
                                     className='w-16 h-16 sm:w-20 sm:h-20 lg:w-[120px] lg:h-[120px] bg-white rounded-full absolute pointer-events-none'
                                     style={{
-                                        top: 'calc(22% - 10px)',
+                                        bottom: 'calc(22% - 10px)',
                                         right: '5%',
                                         transformStyle: 'preserve-3d',
                                         transformOrigin: 'center center',
@@ -349,7 +623,7 @@ const page = () => {
                                 {/* Layer 4: Main Text (Top Layer) */}
                                 <div
                                     ref={textRef}
-                                    className='absolute inset-0 px-4 sm:px-6 lg:px-[30px] py-8 sm:py-12 lg:py-[80px] text-2xl sm:text-4xl lg:text-6xl text-white font-semibold leading-tight lg:leading-normal pointer-events-none'
+                                    className='absolute inset-0 px-4 sm:px-6 lg:px-[30px] py-8 sm:py-12 lg:py-[80px] text-2xl sm:text-4xl lg:text-4xl text-white font-semibold leading-tight lg:leading-normal pointer-events-none'
                                     style={{
                                         transformStyle: 'preserve-3d',
                                         transformOrigin: 'center center',

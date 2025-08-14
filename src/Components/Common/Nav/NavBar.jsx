@@ -225,15 +225,19 @@ function NavBar() {
             </Link>
           </div>
 
-          <div className="menu__button ml-5" onClick={handleDesktopMenuToggle}>
-            <div className="menu__button__icon">
-              {isDesktopMenuOpen ? (
-                <X className="w-[1.5rem] h-[1.5rem] text-black" />
-              ) : (
-                <Menu className="w-[1.5rem] h-[1.5rem] text-black" />
-              )}
+          {pathname === "/" && (
+            <div className="menu__button ml-5" onClick={handleDesktopMenuToggle}>
+              <div className="menu__button__icon">
+                {isDesktopMenuOpen ? (
+                  <X className="w-[1.5rem] h-[1.5rem] text-black" />
+                ) : (
+                  <Menu className="w-[1.5rem] h-[1.5rem] text-black" />
+                )}
+              </div>
             </div>
-          </div>
+          )}
+
+          
         </div>
 
         {/* Mobile/Tablet Menu Button */}

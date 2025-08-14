@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { BsThreads } from "react-icons/bs";
 import { FiShare, FiX } from "react-icons/fi";
 import { Dialog } from '@headlessui/react';
+import { FaLinkedin } from 'react-icons/fa6';
 
 
 const ContactForm = () => {
@@ -300,6 +301,30 @@ const ContactForm = () => {
                 </div>
               </button>
 
+              {/* Linkedin */}
+              <button 
+                onClick={() => openModal('linkedin')}
+                className="flex items-center justify-between px-3 py-[10px] w-full h-[45px] rounded-md border-[3px] border-[rgba(0,0,0,0.19)] transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                style={{
+                  background: 'linear-gradient(90deg, #FFFFFF 0%, #0077B5 100%)'
+                }}
+              >
+                {/* Logo space - user will add logo here */}
+                <div className="w-[82.89px] h-[22.2px] rounded flex items-center justify-center text-xs text-gray-500">
+                  <Image src="/logo.png" alt="facebook" width={82.89} height={22.2} />
+                </div>
+                
+                <div className="flex items-center gap-3">
+                <FaLinkedin className='text-white text-[23px]' />
+                  <span className="font-outfit font-semibold text-[15px] leading-[25px] text-white">
+                    Linkedin
+                  </span>
+                  <svg className="w-[15px] h-[15px] text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M4 11h12.17l-5.59-5.59L12 4l8 8-8 8-1.42-1.41L16.17 13H4v-2z"/>
+                  </svg>
+                </div>
+              </button>
+
               {/* WhatsApp */}
               <button 
                 onClick={() => openModal('whatsapp')}
@@ -423,13 +448,14 @@ const ContactForm = () => {
             {/* Dynamic Header */}
             <div className="flex items-center justify-between p-4 mb-[10px]">
               <FiShare className="w-5 h-5 text-gray-600" />
-              <h3 className="font-bold text-xl">
-                {activeModal === 'instagram' && 'Instagram'}
-                {activeModal === 'facebook' && 'Facebook'}
-                {activeModal === 'thread' && 'Thread'}
-                {activeModal === 'whatsapp' && 'WhatsApp Contact'}
-                {activeModal === 'whatsappChannel' && 'Whatsapp Channel'}
-              </h3>
+                             <h3 className="font-bold text-xl">
+                 {activeModal === 'instagram' && 'Instagram'}
+                 {activeModal === 'facebook' && 'Facebook'}
+                 {activeModal === 'thread' && 'Thread'}
+                 {activeModal === 'linkedin' && 'LinkedIn'}
+                 {activeModal === 'whatsapp' && 'WhatsApp Contact'}
+                 {activeModal === 'whatsappChannel' && 'Whatsapp Channel'}
+               </h3>
               <button onClick={closeModal} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
                 <FiX className="w-5 h-5 text-gray-600" />
               </button>
@@ -455,26 +481,36 @@ const ContactForm = () => {
                 </div>
               )}
 
-              {activeModal === 'thread' && (
-                <div className="space-y-4">
-                  <Image src="/webp/contact/Rectangle 41988.webp" alt="Image 1" width={400} height={200} className="w-full rounded" />
-                  <Image src="/webp/contact/Rectangle 41989.webp" alt="Image 2" width={400} height={200} className="w-full rounded" />
-                  <Image src="/webp/contact/Rectangle 41991.webp" alt="Image 3" width={400} height={200} className="w-full rounded" />
-                </div>
-              )}
+                             {activeModal === 'thread' && (
+                 <div className="space-y-4">
+                   <Image src="/webp/contact/Rectangle 41988.webp" alt="Image 1" width={400} height={200} className="w-full rounded" />
+                   <Image src="/webp/contact/Rectangle 41989.webp" alt="Image 2" width={400} height={200} className="w-full rounded" />
+                   <Image src="/webp/contact/Rectangle 41991.webp" alt="Image 3" width={400} height={200} className="w-full rounded" />
+                 </div>
+               )}
 
-              {/* WhatsApp Contact Content */}
-              {activeModal === 'whatsapp' && (
-                <div className="text-center place-content-center place-items-center h-full">
-                  <p className="text-2xl font-bold text-gray-800">+91-8925889316</p>
-                </div>
-              )}
+               {activeModal === 'linkedin' && (
+                 <div className="space-y-4">
+                   <Image src="/webp/contact/Rectangle 41988.webp" alt="Image 1" width={400} height={200} className="w-full rounded" />
+                   <Image src="/webp/contact/Rectangle 41989.webp" alt="Image 2" width={400} height={200} className="w-full rounded" />
+                   <Image src="/webp/contact/Rectangle 41991.webp" alt="Image 3" width={400} height={200} className="w-full rounded" />
+                 </div>
+               )}
 
-              {activeModal === 'whatsappChannel' && (
-                <div className="text-center place-content-center place-items-center h-full mb-[10px]">
-                  <p className="text-lg font-medium text-gray-800">Subscribe to Stay updated</p>
-                </div>
-              )}
+                             {/* WhatsApp Contact Content */}
+               {activeModal === 'whatsapp' && (
+                 <div className="text-center place-content-center place-items-center h-full space-y-4">
+                   <Image src="/logo.png" alt="AIIF Logo" width={200} height={100} className="mx-auto" />
+                   <p className="text-2xl font-bold text-gray-800">+91-8925889316</p>
+                 </div>
+               )}
+
+               {activeModal === 'whatsappChannel' && (
+                 <div className="text-center place-content-center place-items-center h-full space-y-4">
+                   <Image src="/logo.png" alt="AIIF Logo" width={200} height={100} className="mx-auto" />
+                   <p className="text-lg font-medium text-gray-800">Subscribe to Stay updated</p>
+                 </div>
+               )}
             </div>
 
             {/* Subscribe Text (outside scrollable area) */}
@@ -487,22 +523,26 @@ const ContactForm = () => {
             {/* Dynamic Footer */}
             <div className="p-4 border-t">
               <button 
-                onClick={() => {
-                  if (activeModal === 'instagram') window.open('https://www.instagram.com/ajk.cas/', '_blank');
-                  if (activeModal === 'facebook') window.open('https://www.facebook.com/ajkcollege', '_blank');
-                  if (activeModal === 'whatsapp') window.open('tel:+916384555533', '_self');
-                }}
+                                 onClick={() => {
+                   if (activeModal === 'instagram') window.open('https://www.instagram.com/ajk.cas/', '_blank');
+                   if (activeModal === 'facebook') window.open('https://www.facebook.com/ajkcollege', '_blank');
+                   if (activeModal === 'thread') window.open('https://www.threads.com/@aiif.innovation', '_blank');
+                   if (activeModal === 'linkedin') window.open('https://www.linkedin.com/company/ajkinnovationincubatorfoundation/', '_blank');
+                   if (activeModal === 'whatsapp') window.open('tel:+916384555533', '_self');
+                   if (activeModal === 'whatsappChannel') window.open('https://whatsapp.com/channel/0029VbAQruBAO7R8SaWpwi32', '_blank');
+                 }}
                 className={`w-full py-3 rounded-full font-medium transition-colors ${
                   activeModal === 'whatsappChannel' 
                     ? 'bg-blue-500 hover:bg-blue-600 text-white' 
                     : 'bg-black hover:bg-gray-800 text-white'
                 }`}
               >
-                {activeModal === 'instagram' && 'Follow on Instagram'}
-                {activeModal === 'facebook' && 'Follow on Facebook'}
-                {activeModal === 'thread' && 'Follow on Thread'}
-                {activeModal === 'whatsapp' && 'chat with us'}
-                {activeModal === 'whatsappChannel' && 'Click to Join'}
+                 {activeModal === 'instagram' && 'Follow on Instagram'}
+                 {activeModal === 'facebook' && 'Follow on Facebook'}
+                 {activeModal === 'thread' && 'Follow on Thread'}
+                 {activeModal === 'linkedin' && 'Follow on LinkedIn'}
+                 {activeModal === 'whatsapp' && 'chat with us'}
+                 {activeModal === 'whatsappChannel' && 'Click to Join'}
               </button>
             </div>
 
