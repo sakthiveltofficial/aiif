@@ -153,7 +153,7 @@ const BentoGrid = () => {
               )}
               <div>
                 <h3 className={`mb-1 md:mb-2 text-base md:text-lg lg:text-3xl`}>{card.title}</h3>
-                <div className={`text-xs md:text-sm lg:text-lg text-gray-600 tracking-wide`}>{card.content}</div>
+                <div className={`text-sm md:text-sm lg:text-lg text-gray-600 tracking-wide`}>{card.content}</div>
               </div>
               <button className="mt-2 md:mt-4 px-4 py-2 rounded-lg bg-[#6366F1] text-white font-bold shadow hover:bg-[#4f46e5] transition-all w-full md:w-auto self-end md:self-start">
                 Register Now
