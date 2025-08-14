@@ -28,7 +28,9 @@ function ScrollbasedAnimation({ project }) {
   const [introPlayed, setIntroPlayed] = useState(false);
   const [projectReady, setProjectReady] = useState(false);
   const totalDuration = val(sheet.sequence.pointer.length);
-  const MAX_SCROLL_DURATION = 39; // Limit scrolling to duration 39
+  // Check if device is mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  const MAX_SCROLL_DURATION = isMobile ? 38.55 : 39; // End 0.5s earlier on mobile
   const INTRO_DURATION = 1; // Start from duration 1 (no longer skipping first 4)
   const INTRO_END_DURATION = 4; // Auto-play until duration 4
   const INTRO_PLAY_DURATION_MS = 4000; // Smooth autoplay duration (ms)
