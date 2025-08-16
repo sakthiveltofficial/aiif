@@ -76,9 +76,9 @@ const page = () => {
             </div>
 
             {/* cards */}
-            <div className="w-full my-3 md:my-12 lg:my-16 p-1 md:p-4 rounded-lg">
+            {/* <div className="w-full my-3 md:my-12 lg:my-16 p-1 md:p-4 rounded-lg">
                 <HorizontalStackingCards />
-            </div>
+            </div> */}
 
 
             <div className="w-full">
@@ -151,7 +151,8 @@ function StandoutSection() {
 
 
       {/* Left column */}
-      <div className="flex-1 flex flex-col items-start justify-center w-full lg:max-w-xl">
+      {/* <div className="flex-1 flex flex-col items-start justify-center w-full lg:max-w-xl"> */}
+      <div className="flex-1 flex flex-col items-start justify-center w-full ">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#4e73ff] mb-4 sm:mb-6 leading-tight text-center lg:text-left w-full">
           Startup Clinic
         </h2>
@@ -181,7 +182,7 @@ function StandoutSection() {
 
 
       {/* Right column */}
-      <div className="flex-1 flex items-center justify-center w-full lg:w-auto mt-6 lg:mt-0">
+      {/* <div className="flex-1 flex items-center justify-center w-full lg:w-auto mt-6 lg:mt-0">
         <div className="relative w-full h-64 sm:h-80 lg:h-96 xl:h-[500px] rounded-2xl overflow-hidden">
           <Image 
             src="/webp/startup.webp" 
@@ -191,7 +192,7 @@ function StandoutSection() {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
           />
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

@@ -311,7 +311,7 @@ function getEmailTemplate({ firstName, email, phoneNumber, message }) {
                     <div class="contact-item">
                         <div class="contact-label">Email</div>
                         <div class="contact-value">
-                            <a href="mailto:aiif@ajkcas.ac.in" class="contact-link">aiif@ajkcas.ac.in</a>
+                            <a href="mailto:info@aiif.in" class="contact-link">info@aiif.in</a>
                         </div>
                     </div>
                     
@@ -373,7 +373,7 @@ export async function POST(request) {
     const template = getEmailTemplate({ firstName, email, phoneNumber, message });
     
     // Send email to admin
-    const adminEmail = process.env.SMTP_FROM || 'aiif@ajkcas.ac.in';
+    const adminEmail = process.env.SMTP_FROM || 'info@aiif.in';
     await mailInstance.sendMail({
       to: adminEmail,
       subject: `New Contact Form Submission from ${firstName}`,

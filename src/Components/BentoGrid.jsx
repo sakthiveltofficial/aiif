@@ -6,7 +6,7 @@ const bentoCards = [
   {
     id: 1,
     title: 'Fuel Your Startup Journey with the Right Tools',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop&crop=center',
+    // image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop&crop=center',
     content: (
       <>
         <p className="mb-2 text-xs md:text-sm leading-6">
@@ -21,7 +21,7 @@ const bentoCards = [
     ),
     bg: 'bg-[#F5E8FF]',
     mdColSpan: 'md:col-span-2',
-    mdRowSpan: 'md:row-span-2',
+    mdRowSpan: 'md:row-span-1',
     text: 'text-gray-900',
     font: 'font-bold',
   },

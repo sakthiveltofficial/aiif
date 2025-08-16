@@ -17,29 +17,29 @@ gsap.registerPlugin(useGSAP);
 
 function page() {
   // intro
-  const leftCurtainRef = useRef(null);
-  const rightCurtainRef = useRef(null);
+  // const leftCurtainRef = useRef(null);
+  // const rightCurtainRef = useRef(null);
 
-  useGSAP(() => {
-    // TV Screen opening animation - curtains sliding apart
-    const timeline = gsap.timeline({ delay: 0.5 });
+  // useGSAP(() => {
+  //   // TV Screen opening animation - curtains sliding apart
+  //   const timeline = gsap.timeline({ delay: 0.5 });
     
-    timeline
-      .to([leftCurtainRef.current, rightCurtainRef.current], {
-        duration: 2,
-        ease: "power2.inOut",
-      })
-      .to(leftCurtainRef.current, {
-        x: "-100%",
-        duration: 2,
-        ease: "power2.inOut",
-      }, 0)
-      .to(rightCurtainRef.current, {
-        x: "100%", 
-        duration: 2,
-        ease: "power2.inOut",
-      }, 0);
-  }, []);
+  //   timeline
+  //     .to([leftCurtainRef.current, rightCurtainRef.current], {
+  //       duration: 2,
+  //       ease: "power2.inOut",
+  //     })
+  //     .to(leftCurtainRef.current, {
+  //       x: "-100%",
+  //       duration: 2,
+  //       ease: "power2.inOut",
+  //     }, 0)
+  //     .to(rightCurtainRef.current, {
+  //       x: "100%", 
+  //       duration: 2,
+  //       ease: "power2.inOut",
+  //     }, 0);
+  // }, []);
 
   return (
     <>
@@ -65,21 +65,21 @@ function page() {
           </div>
 
           {/* section 2 - video */}
-          <div className="my-[1.5rem] w-full h-[180px] md:h-[400px] rounded-[3rem] md:rounded-[2rem] relative overflow-hidden">
+          {/* <div className="my-[1.5rem] w-full h-[180px] md:h-[400px] rounded-[3rem] md:rounded-[2rem] relative overflow-hidden"> */}
             
             {/* Left curtain */}
-            <div 
+            {/* <div 
               ref={leftCurtainRef}
               className="absolute inset-0 w-1/2 h-full bg-white rounded-l-[2rem] z-10" 
-            />
+            /> */}
             
             {/* Right curtain */}
-            <div 
+            {/* <div 
               ref={rightCurtainRef}
               className="absolute inset-0 left-1/2 w-1/2 h-full bg-white rounded-r-[2rem] z-10" 
-            />
+            /> */}
 
-            <Image
+            {/* <Image
               src="/webp/young-businessman-wearing.webp"
               alt="About AJK Innovation Incubator Foundation"
               width={1920}
@@ -87,7 +87,7 @@ function page() {
               priority
               quality={95}
               className="w-full h-full object-cover rounded-[2rem]"
-            />
+            /> */}
 
             
 
@@ -112,7 +112,7 @@ function page() {
               </p>
             </video> */}
 
-          </div>
+          {/* </div> */}
 
                       {/* section 3 - Vision */}
             <div className="flex flex-col items-center justify-center my-[3rem] md:my-[5rem] space-y-[1rem] px-4">

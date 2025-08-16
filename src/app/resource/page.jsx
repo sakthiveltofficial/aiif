@@ -15,7 +15,8 @@ const page = () => {
           <BentoGrid />
         </div>
 
-        <div className=' mt-[2rem]'>
+        {/* <div className=' mt-[2rem]'> */}
+        <div className=''>
           
           <OtherSection />
         </div>

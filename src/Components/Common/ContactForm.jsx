@@ -132,7 +132,7 @@ const ContactForm = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="aiif@ajkcas.ac.in"
+                    placeholder="info@aiif.in"
                     className="w-full h-[44px] sm:h-[48px] px-3 sm:px-4 py-3 font-outfit text-sm sm:text-base leading-6 text-[#667085] bg-white border border-[#d0d5dd] rounded-lg focus:outline-none focus:border-[#4e73ff] focus:ring-1 focus:ring-[#4e73ff] transition-colors duration-200"
                   />
                 </div>
@@ -417,7 +417,7 @@ const ContactForm = () => {
                 E-mail Address
               </h4>
               <p className="font-outfit text-sm sm:text-base leading-6 text-[#7e7e7e] break-all md:break-normal">
-                aiif@ajkcas.ac.in
+                info@aiif.in
               </p>
             </div>
 

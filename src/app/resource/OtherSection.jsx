@@ -123,7 +123,8 @@ const OtherSection = () => {
   }
 
   return (
-    <section className="py-20 mt-[2rem]">
+    // <section className="py-20 mt-[2rem]">
+    <section className="py-20 -mt-[10rem] ">
 
 <p className='text-4xl font-bold text-center mb-[3.5rem]'>Resources That Build Real Businesses</p>
 
