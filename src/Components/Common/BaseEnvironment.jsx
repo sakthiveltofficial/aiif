@@ -14,7 +14,7 @@ function BaseEnvironment() {
       
       {/* Floor with optimized reflection and shadow receiving */}
       <group position={[0, -0.65, 0]}>
-        <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        {/* <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
           <planeGeometry args={[150, 200]} />
           <MeshReflectorMaterial
             blur={[100, 30]}
@@ -28,7 +28,7 @@ function BaseEnvironment() {
             color="#050505"
             metalness={0.2}
           />
-        </mesh>
+        </mesh> */}
       </group>
       
       {/* Brighter environment lighting for better visibility */}

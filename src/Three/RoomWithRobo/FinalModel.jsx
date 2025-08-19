@@ -15,7 +15,8 @@ export const FinalModel = React.forwardRef((props, ref) => {
   );
   const { actions, clips, names } = useAnimations(animations, animationRef);
   const sheet = useCurrentSheet();
-  const [doorPosition, setDoorPosition] = useState([-1.303, 2.198, 30.913]);
+  const doorPositionRef = useRef([-1.303, 2.198, 30.913]);
+  const [doorKey, setDoorKey] = useState(0); // Force re-render when position changes
   const router = useRouter();
 
   useEffect(() => {
@@ -32,11 +33,25 @@ export const FinalModel = React.forwardRef((props, ref) => {
         const startX = -1.303;
         const endX = -3.603;
         const currentX = startX + (endX - startX) * progress;
-        setDoorPosition([currentX, 2.198, 30.913]);
+        const newPosition = [currentX, 2.198, 30.913];
+        
+        // Only update if position actually changed
+        if (doorPositionRef.current[0] !== newPosition[0]) {
+          doorPositionRef.current = newPosition;
+          setDoorKey(prev => prev + 1); // Force re-render
+        }
       } else if (currentDuration < 8.10) {
-        setDoorPosition([-1.303, 2.198, 30.913]);
+        const newPosition = [-1.303, 2.198, 30.913];
+        if (doorPositionRef.current[0] !== newPosition[0]) {
+          doorPositionRef.current = newPosition;
+          setDoorKey(prev => prev + 1);
+        }
       } else if (currentDuration > 8.90) {
-        setDoorPosition([-3.603, 2.198, 30.913]);
+        const newPosition = [-3.603, 2.198, 30.913];
+        if (doorPositionRef.current[0] !== newPosition[0]) {
+          doorPositionRef.current = newPosition;
+          setDoorKey(prev => prev + 1);
+        }
       }
     }
   });
@@ -1828,13 +1843,14 @@ export const FinalModel = React.forwardRef((props, ref) => {
           scale={0.01}
         />
         <mesh
+          key={doorKey}
           theatreKey="room1_1stDoor_left"
           name="Tunnel_Glass_L_Door2_Scifi_Door_Glass_0006"
           castShadow
           receiveShadow
           geometry={nodes.Tunnel_Glass_L_Door2_Scifi_Door_Glass_0006.geometry}
           material={materials["Scifi_Door_Glass.004"]}
-          position={doorPosition}
+          position={doorPositionRef.current}
           scale={0.01}
         >
           {/* <axesHelper args={[1000]} /> */}

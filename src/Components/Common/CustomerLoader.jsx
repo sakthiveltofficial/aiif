@@ -7,6 +7,7 @@ export function CustomLoader() {
   const { progress } = useProgress()
   const [isVisible, setIsVisible] = useState(true)
   const [display, setDisplay] = useState(0)
+  const [fadeOut, setFadeOut] = useState(false)
   const animProgress = useRef(0)
   const rafRef = useRef()
 
@@ -21,11 +22,15 @@ export function CustomLoader() {
         animProgress.current = newProgress
       }
       setDisplay(animProgress.current)
+      
       if (animProgress.current < 100) {
         rafRef.current = requestAnimationFrame(animate)
       } else {
-        // Hide loader immediately when 100% is reached
-        setTimeout(() => setIsVisible(false), 100) // Very short delay
+        // Start fade out immediately when 100% is reached
+        setFadeOut(true)
+        // Wait for 3D scene to be fully loaded before completely hiding loader
+        // This ensures no black page appears
+        setTimeout(() => setIsVisible(false), 1000) // Wait 1 second for scene to fully render
       }
     }
     if (isVisible) {
@@ -46,7 +51,9 @@ export function CustomLoader() {
         zIndex: 99999,
         position: "fixed",
         top: 0,
-        left: 0
+        left: 0,
+        opacity: fadeOut ? 0 : 1,
+        transition: "opacity 0.5s ease-out",
       }}
     >
       <div style={{

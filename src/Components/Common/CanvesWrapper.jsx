@@ -190,6 +190,7 @@ function CanvesWrapper({ children, onDurationChange }) {
             left: 0,
             width: "100%",
             height: "100%",
+            background: "linear-gradient(135deg, #4e73ff 0%, #6b95ff 100%)",
           }}
         >
           <Suspense fallback={<CustomLoader />}>
