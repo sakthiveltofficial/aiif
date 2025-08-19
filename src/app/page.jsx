@@ -68,6 +68,51 @@ import { StartupRocket } from "@/Three/showcaseroom/newmodels/StartupRocket";
 // import { CloudEffect } from "@/Three/Room/Scene/CloudEffect";
 // import { Model } from "@/Three/model";
 import { gsap } from "gsap";
+
+// Performance optimized GSAP settings for different devices
+const getGSAPConfig = () => {
+  if (typeof window === 'undefined') return { duration: 0.8, ease: "back.out(1.7)" };
+  
+  const ua = navigator.userAgent;
+  const width = window.innerWidth;
+  const pixelRatio = window.devicePixelRatio || 1;
+  const memory = navigator.deviceMemory || 4;
+  const cores = navigator.hardwareConcurrency || 4;
+  
+  // iPhone XR and similar detection
+  const isIPhoneXR = /iPhone.*OS 1[2-6]_/.test(ua) && (width === 414 || width === 375) && pixelRatio < 3;
+  const isMediumDevice = (
+    (width <= 768 && width > 375 && pixelRatio <= 2) ||
+    isIPhoneXR ||
+    (cores <= 4 && memory <= 4)
+  );
+  
+  if (cores <= 2 || memory <= 2) {
+    // Low-end devices: minimal animations
+    return {
+      duration: 0.4,
+      ease: "power2.out",
+      force3D: false,
+      lazy: true
+    };
+  } else if (isMediumDevice) {
+    // Medium devices like iPhone XR: balanced performance
+    return {
+      duration: 0.6,
+      ease: "power3.out",
+      force3D: true,
+      lazy: false
+    };
+  }
+  
+  // High-end devices: full animations
+  return {
+    duration: 0.8,
+    ease: "back.out(1.7)",
+    force3D: true,
+    lazy: false
+  };
+};
 // import { ChevronDown } from "lucide-react";
 import ScrollIndicator from "./ScrollIndicator";
 import ScrollIndicatorUI from "./ScrollIndicatorUI";
@@ -114,20 +159,35 @@ export default function Home() {
     loadFont();
   }, []);
 
-  // Mobile detection
+  // Enhanced device detection
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+    const checkDevice = () => {
+      const isMobile = window.innerWidth < 768;
+      setIsMobile(isMobile);
+      
+      // Log device info for debugging performance issues
+      if (process.env.NODE_ENV === 'development') {
+        const config = getGSAPConfig();
+        console.log('Device performance config:', {
+          width: window.innerWidth,
+          pixelRatio: window.devicePixelRatio,
+          cores: navigator.hardwareConcurrency,
+          memory: navigator.deviceMemory,
+          gsapConfig: config
+        });
+      }
     };
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkDevice);
   }, []);
 
-  // GSAP Animation for popup
+  // Optimized GSAP Animation for popup
   useEffect(() => {
+    const config = getGSAPConfig();
+    
     if (popupVisible) {
       // First, add to DOM
       setPopupRender(true);
@@ -137,20 +197,22 @@ export default function Home() {
         if (popupRef.current) {
           gsap.killTweensOf(popupRef.current);
           
-          // Set initial state
+          // Set initial state with performance optimizations
           gsap.set(popupRef.current, {
             opacity: 0,
-            y: 100,
-            scale: 0.8
+            y: config.duration < 0.6 ? 50 : 100, // Smaller movement for low-end devices
+            scale: config.duration < 0.6 ? 0.9 : 0.8,
+            force3D: config.force3D
           });
           
-          // Animate in
+          // Animate in with device-specific settings
           gsap.to(popupRef.current, {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 0.8,
-            ease: "back.out(1.7)"
+            duration: config.duration,
+            ease: config.ease,
+            force3D: config.force3D
           });
         }
       });
@@ -161,17 +223,16 @@ export default function Home() {
         
         gsap.to(popupRef.current, {
           opacity: 0,
-          y: 100,
-          scale: 0.8,
-          duration: 0.5,
+          y: config.duration < 0.6 ? 30 : 100,
+          scale: config.duration < 0.6 ? 0.95 : 0.8,
+          duration: config.duration * 0.6, // Faster exit animation
           ease: "power2.in",
+          force3D: config.force3D,
           onComplete: () => {
-            // Remove from DOM after animation
             setPopupRender(false);
           }
         });
       } else {
-        // If no ref, just remove from DOM
         setPopupRender(false);
       }
     }
@@ -586,8 +647,13 @@ export default function Home() {
               
               </div>
                
-              {/* Shimmer Effect */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-30 animate-pulse"></div>
+              {/* Conditional Shimmer Effect - only on high-end devices */}
+              {(() => {
+                const config = getGSAPConfig();
+                return config.duration > 0.6 && (
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-30 animate-pulse"></div>
+                );
+              })()}
             </div>
             
             {/* Floating Particles */}

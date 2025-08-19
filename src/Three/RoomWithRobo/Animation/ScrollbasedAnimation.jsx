@@ -28,9 +28,29 @@ function ScrollbasedAnimation({ project }) {
   const [introPlayed, setIntroPlayed] = useState(false);
   const [projectReady, setProjectReady] = useState(false);
   const totalDuration = val(sheet.sequence.pointer.length);
-  // Check if device is mobile
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-  const MAX_SCROLL_DURATION = isMobile ? 38.55 : 39; // End 0.5s earlier on mobile
+  // Enhanced device detection for performance optimization
+  const detectDevice = () => {
+    const ua = navigator.userAgent;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const pixelRatio = window.devicePixelRatio || 1;
+    
+    // Detect iPhone XR and similar medium-performance devices
+    const isIPhoneXR = /iPhone.*OS 1[2-6]_/.test(ua) && (width === 414 || width === 375) && pixelRatio < 3;
+    const isMediumDevice = (
+      width <= 768 && width > 375 && pixelRatio <= 2
+    ) || isIPhoneXR || (
+      navigator.hardwareConcurrency <= 4 && 
+      navigator.deviceMemory <= 4
+    );
+    
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua) || width <= 768;
+    
+    return { isMobile, isMediumDevice, isIPhoneXR };
+  };
+  
+  const { isMobile, isMediumDevice, isIPhoneXR } = detectDevice();
+  const MAX_SCROLL_DURATION = isMobile ? (isMediumDevice ? 38.0 : 38.55) : 39;
   const INTRO_DURATION = 1; // Start from duration 1 (no longer skipping first 4)
   const INTRO_END_DURATION = 4; // Auto-play until duration 4
   const INTRO_PLAY_DURATION_MS = 4000; // Smooth autoplay duration (ms)
@@ -93,7 +113,8 @@ function ScrollbasedAnimation({ project }) {
       if (!introPlayed || !projectReady) return;
 
       e.preventDefault();
-      const scrollSpeed = 0.0015;
+      // Adaptive scroll speed based on device performance
+      const scrollSpeed = isMediumDevice ? 0.001 : (isMobile ? 0.0012 : 0.0015);
       const deltaY = e.deltaY * scrollSpeed;
       
       const newTarget = Math.max(
@@ -121,7 +142,8 @@ function ScrollbasedAnimation({ project }) {
       e.preventDefault();
       const touchY = e.touches[0].clientY;
       const deltaY = touchStartY - touchY; // Inverted for natural feel
-      const scrollSpeed = 0.01; // MUCH faster for touch
+      // Optimized touch scroll speed for medium devices
+      const scrollSpeed = isMediumDevice ? 0.006 : (isMobile ? 0.008 : 0.01);
       
       const newTarget = Math.max(
         INTRO_END_DURATION,
@@ -140,8 +162,9 @@ function ScrollbasedAnimation({ project }) {
       
       // Add momentum for quick swipes
       if (touchDuration < 300) {
-        const velocity = 0.006; // MUCH faster momentum
-        const momentum = velocity * (touchDuration / 100);
+        // Reduced momentum for smoother performance on medium devices
+        const velocity = isMediumDevice ? 0.003 : 0.006;
+        const momentum = velocity * (touchDuration / (isMediumDevice ? 150 : 100));
         
         const newTarget = Math.max(
           INTRO_END_DURATION,
@@ -171,7 +194,11 @@ function ScrollbasedAnimation({ project }) {
 
     const { current, target } = scrollRef.current;
     const distance = target - current;
-    const smoothness = 0.075;
+    // Adaptive smoothness for better performance on medium devices
+    const smoothness = isMediumDevice ? 0.05 : 0.075;
+    
+    // Use RAF throttling for medium devices
+    if (isMediumDevice && Math.abs(distance) < 0.001) return;
     
     scrollRef.current.current += distance * smoothness;
     

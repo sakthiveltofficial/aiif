@@ -20,6 +20,67 @@ import { CustomLoader } from "./CustomerLoader";
 import { SimpleLoader } from "./SimpleLoader";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import DynamicLighting from "@/Three/lighting/DynamicLighting";
+import { PerformanceOptimizer } from "./PerformanceOptimizer";
+
+// Device performance detection and optimization
+const detectDevicePerformance = () => {
+  if (typeof window === 'undefined') return { tier: 'high', settings: {} };
+  
+  const ua = navigator.userAgent;
+  const width = window.innerWidth;
+  const pixelRatio = window.devicePixelRatio || 1;
+  const memory = navigator.deviceMemory || 4;
+  const cores = navigator.hardwareConcurrency || 4;
+  
+  // iPhone XR and similar medium devices detection
+  const isIPhoneXR = /iPhone.*OS 1[2-6]_/.test(ua) && (width === 414 || width === 375) && pixelRatio < 3;
+  const isMediumDevice = (
+    (width <= 768 && width > 375 && pixelRatio <= 2) ||
+    isIPhoneXR ||
+    (cores <= 4 && memory <= 4) ||
+    /iPhone.*OS (1[0-4])_/.test(ua)
+  );
+  
+  const isLowEnd = cores <= 2 || memory <= 2 || pixelRatio <= 1;
+  
+  if (isLowEnd) {
+    return {
+      tier: 'low',
+      settings: {
+        dpr: 1,
+        antialias: false,
+        shadows: false,
+        powerPreference: 'default',
+        fov: width < 768 ? 130 : 80,
+        frameloop: 'demand'
+      }
+    };
+  } else if (isMediumDevice) {
+    return {
+      tier: 'medium', 
+      settings: {
+        dpr: Math.min(1.5, pixelRatio),
+        antialias: pixelRatio <= 1,
+        shadows: 'basic',
+        powerPreference: 'high-performance',
+        fov: width < 768 ? 120 : 75,
+        frameloop: 'always'
+      }
+    };
+  }
+  
+  return {
+    tier: 'high',
+    settings: {
+      dpr: Math.min(2, pixelRatio),
+      antialias: true,
+      shadows: 'soft',
+      powerPreference: 'high-performance', 
+      fov: width < 768 ? 120 : 70,
+      frameloop: 'always'
+    }
+  };
+};
 
 // Error boundary for React errors
 class ThreeErrorBoundary extends Component {
@@ -65,6 +126,7 @@ class ThreeErrorBoundary extends Component {
 
 function CanvesWrapper({ children, onDurationChange }) {
   const [isClient, setIsClient] = useState(false);
+  const [devicePerformance, setDevicePerformance] = useState({ tier: 'high', settings: {} });
   
   // Initialize all hooks first - before any conditional returns
   const project = getProject("MainProject", { state: sequences });
@@ -76,9 +138,6 @@ function CanvesWrapper({ children, onDurationChange }) {
   // Null safety check for children
   const safeChildren = children || null;
   
-  // Fixed high quality settings for best performance
-  const quality = 'high';
-  
   // Responsive camera state
   const [cameraSettings, setCameraSettings] = useState({
     position: [0, 2, 50],
@@ -87,25 +146,32 @@ function CanvesWrapper({ children, onDurationChange }) {
   
   useEffect(() => {
     setIsClient(true);
+    // Detect device performance on client side
+    const performance = detectDevicePerformance();
+    setDevicePerformance(performance);
+    
+    console.log('Device performance tier:', performance.tier, performance.settings);
   }, []);
   
 
   useEffect(() => {
     function handleResize() {
       if (typeof window !== 'undefined') {
+        const perf = detectDevicePerformance();
         if (window.innerWidth < 768) {
-          // Mobile
+          // Mobile with adaptive settings based on device performance
           setCameraSettings({
-            position: [0, 2, 80], // Move camera back for mobile
-            fov: 120, // Wider field of view for mobile
+            position: perf.tier === 'low' ? [0, 2, 90] : [0, 2, 80],
+            fov: perf.settings.fov || (perf.tier === 'low' ? 130 : 120),
           });
         } else {
           // Desktop
           setCameraSettings({
             position: [0, 2, 50],
-            fov: 70,
+            fov: perf.settings.fov || 70,
           });
         }
+        setDevicePerformance(perf);
       }
     }
     
@@ -171,19 +237,23 @@ function CanvesWrapper({ children, onDurationChange }) {
           <Canvas
           camera={{ fov: cameraSettings.fov, position: cameraSettings.position }}
           gl={{
-            antialias: true,
+            antialias: devicePerformance.settings.antialias ?? true,
             preserveDrawingBuffer: true,
-            powerPreference: 'high-performance',
+            powerPreference: devicePerformance.settings.powerPreference || 'high-performance',
             alpha: false,
             stencil: false,
             depth: true,
             logarithmicDepthBuffer: false,
             premultipliedAlpha: false
           }}
-          dpr={typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 2}
-          shadows="soft"
-          performance={{ min: 0.5, max: 1, debounce: 100 }}
-          frameloop="always"
+          dpr={devicePerformance.settings.dpr || (typeof window !== 'undefined' ? Math.min(window.devicePixelRatio, 2) : 2)}
+          shadows={devicePerformance.settings.shadows || "soft"}
+          performance={{ 
+            min: devicePerformance.tier === 'low' ? 0.3 : 0.5, 
+            max: devicePerformance.tier === 'low' ? 0.8 : 1, 
+            debounce: devicePerformance.tier === 'medium' ? 200 : 100 
+          }}
+          frameloop={devicePerformance.settings.frameloop || "always"}
           style={{
             position: "absolute",
             top: 0,
@@ -194,8 +264,8 @@ function CanvesWrapper({ children, onDurationChange }) {
           }}
         >
           <Suspense fallback={<CustomLoader />}>
-            
-            <SheetProvider sheet={sheet}>
+            <PerformanceOptimizer targetFPS={devicePerformance.tier === 'low' ? 24 : 30}>
+              <SheetProvider sheet={sheet}>
               <ScrollbasedAnimation project={project} />
               <PerspectiveCamera
                 makeDefault
@@ -217,11 +287,17 @@ function CanvesWrapper({ children, onDurationChange }) {
               <BaseEnvironment />
               <DynamicLighting />
               {safeChildren}
+              {/* Conditionally render expensive effects based on device performance */}
               {/* <OrbitControls rotateSpeed={0.3} zoomSpeed={0.9} panSpeed={0.3} /> */}
-              {/* <EffectComposer>
-                <Bloom intensity={0.33423} luminanceThreshold={0} luminanceSmoothing={0.9} layers={[1]} />
-              </EffectComposer> */}
-            </SheetProvider>
+              {devicePerformance.tier === 'high' && (
+                // Only render bloom effect on high-performance devices
+                // <EffectComposer>
+                //   <Bloom intensity={0.33423} luminanceThreshold={0} luminanceSmoothing={0.9} layers={[1]} />
+                // </EffectComposer>
+                null
+              )}
+              </SheetProvider>
+            </PerformanceOptimizer>
             {/* <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
               <GizmoViewport
               axisColors={["red", "green", "blue"]}
@@ -235,7 +311,7 @@ function CanvesWrapper({ children, onDurationChange }) {
           cellSize={1}
           cellThickness={1}
           /> */}
-          </Suspense>
+            </Suspense>
           </Canvas>
         </div>
       </div>
